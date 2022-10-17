@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "tunnel": "lt --port 3000"
   },
   "devDependencies": {
     "eslint": "^8.25.0",
