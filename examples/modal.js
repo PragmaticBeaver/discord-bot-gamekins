@@ -1,17 +1,17 @@
-import 'dotenv/config';
-import express from 'express';
+import "dotenv/config";
+import express from "express";
 import {
   InteractionType,
   InteractionResponseType,
   MessageComponentTypes,
-} from 'discord-interactions';
-import { VerifyDiscordRequest } from '../utils.js';
+} from "discord-interactions";
+import { VerifyDiscordRequest } from "../utils.js";
 
 // Create and configure express app
 const app = express();
 app.use(express.json({ verify: VerifyDiscordRequest(process.env.PUBLIC_KEY) }));
 
-app.post('/interactions', function (req, res) {
+app.post("/interactions", function (req, res) {
   // Interaction type and data
   const { type, data } = req.body;
   /**
@@ -19,13 +19,13 @@ app.post('/interactions', function (req, res) {
    */
   if (type === InteractionType.APPLICATION_COMMAND) {
     // Slash command with name of "test"
-    if (data.name === 'test') {
+    if (data.name === "test") {
       // Send a modal as response
       return res.send({
         type: InteractionResponseType.APPLICATION_MODAL,
         data: {
-          custom_id: 'my_modal',
-          title: 'Modal title',
+          custom_id: "my_modal",
+          title: "Modal title",
           components: [
             {
               // Text inputs must be inside of an action component
@@ -34,9 +34,9 @@ app.post('/interactions', function (req, res) {
                 {
                   // See https://discord.com/developers/docs/interactions/message-components#text-inputs-text-input-structure
                   type: MessageComponentTypes.INPUT_TEXT,
-                  custom_id: 'my_text',
+                  custom_id: "my_text",
                   style: 1,
-                  label: 'Type some text',
+                  label: "Type some text",
                 },
               ],
             },
@@ -45,10 +45,10 @@ app.post('/interactions', function (req, res) {
               components: [
                 {
                   type: MessageComponentTypes.INPUT_TEXT,
-                  custom_id: 'my_longer_text',
+                  custom_id: "my_longer_text",
                   // Bigger text box for input
                   style: 2,
-                  label: 'Type some (longer) text',
+                  label: "Type some (longer) text",
                 },
               ],
             },
@@ -67,8 +67,8 @@ app.post('/interactions', function (req, res) {
     // user ID of member who filled out modal
     const userId = req.body.member.user.id;
 
-    if (modalId === 'my_modal') {
-      let modalValues = '';
+    if (modalId === "my_modal") {
+      let modalValues = "";
       // Get value of text inputs
       for (let action of data.components) {
         let inputComponent = action.components[0];
@@ -86,5 +86,5 @@ app.post('/interactions', function (req, res) {
 });
 
 app.listen(3000, () => {
-  console.log('Listening on port 3000');
+  console.log("Listening on port 3000");
 });

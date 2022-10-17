@@ -1,18 +1,18 @@
-import 'dotenv/config';
-import express from 'express';
+import "dotenv/config";
+import express from "express";
 import {
   InteractionType,
   InteractionResponseType,
   MessageComponentTypes,
   ButtonStyleTypes,
-} from 'discord-interactions';
-import { VerifyDiscordRequest } from '../utils.js';
+} from "discord-interactions";
+import { VerifyDiscordRequest } from "../utils.js";
 
 // Create and configure express app
 const app = express();
 app.use(express.json({ verify: VerifyDiscordRequest(process.env.PUBLIC_KEY) }));
 
-app.post('/interactions', function (req, res) {
+app.post("/interactions", function (req, res) {
   // Interaction type and data
   const { type, data } = req.body;
   /**
@@ -20,12 +20,12 @@ app.post('/interactions', function (req, res) {
    */
   if (type === InteractionType.APPLICATION_COMMAND) {
     // Slash command with name of "test"
-    if (data.name === 'test') {
+    if (data.name === "test") {
       // Send a message with a button
       return res.send({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
-          content: 'A message with a button',
+          content: "A message with a button",
           // Buttons are inside of action rows
           components: [
             {
@@ -34,8 +34,8 @@ app.post('/interactions', function (req, res) {
                 {
                   type: MessageComponentTypes.BUTTON,
                   // Value for your app to identify the button
-                  custom_id: 'my_button',
-                  label: 'Click',
+                  custom_id: "my_button",
+                  label: "Click",
                   style: ButtonStyleTypes.PRIMARY,
                 },
               ],
@@ -55,7 +55,7 @@ app.post('/interactions', function (req, res) {
     // user who clicked button
     const userId = req.body.member.user.id;
 
-    if (componentId === 'my_button') {
+    if (componentId === "my_button") {
       console.log(req.body);
       return res.send({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -66,5 +66,5 @@ app.post('/interactions', function (req, res) {
 });
 
 app.listen(3000, () => {
-  console.log('Listening on port 3000');
+  console.log("Listening on port 3000");
 });
