@@ -23,20 +23,26 @@ const COMMAND_TYPES = {
   ROLE: 8,
 };
 
+export const COMMAND_NAMES = {
+  TEST: "test",
+  STEAM_DEALS: "show-deals-steam",
+  STEAM_FREEBIES: "show-freebies-steam"
+};
+
 export const TEST_COMMAND = {
-  name: "test",
+  name: COMMAND_NAMES.TEST,
   description: "Basic guild command",
   type: 1,
 };
 
 export const SHOW_STEAM_DEALS = {
-  name: "show-deals-steam",
+  name: COMMAND_NAMES.STEAM_DEALS,
   description: "Show the top deals on steam",
   type: COMMAND_TYPES.SUB_COMMAND,
 };
 
 export const SHOW_STEAM_FREEBIES = {
-  name: "show-freebies-steam",
+  name: COMMAND_NAMES.STEAM_FREEBIES,
   description: "Show free games on steam",
   type: COMMAND_TYPES.SUB_COMMAND,
 };

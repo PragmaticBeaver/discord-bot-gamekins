@@ -11,22 +11,22 @@ import { VerifyGuildCommands } from "./guild-commands.js";
 import {
   SHOW_STEAM_DEALS,
   SHOW_STEAM_FREEBIES,
-  TEST_COMMAND
+  TEST_COMMAND,
+  COMMAND_NAMES
 } from "./commands.js";
+import { gatherSteamDeals } from "./steam.js";
 
 const PORT = process.env.PORT || 3000;
 
 const app = express();
-app.use(express.json({ verify: VerifyDiscordRequest(process.env.PUBLIC_KEY) }));
+app.use(express.json(
+  { verify: VerifyDiscordRequest(process.env.PUBLIC_KEY) } // express middleware for verification
+));
 
 app.post("/interactions", async function (req, res) {
-  // Interaction type and data
   const { type, id, data } = req.body;
   console.log(`interaction: ${type, id, data}`);
 
-  /**
-   * Handle verification requests
-   */
   if (type === InteractionType.PING) {
     return res.send({ type: InteractionResponseType.PONG });
   }
@@ -39,7 +39,7 @@ app.post("/interactions", async function (req, res) {
     const { name } = data;
 
     // "test" guild command
-    if (name === "test") {
+    if (name === COMMAND_NAMES.TEST) {
       // Send a message into the channel where command was triggered from
       return res.send({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -48,6 +48,19 @@ app.post("/interactions", async function (req, res) {
           content: "hello world",
         },
       });
+    }
+
+    if (name === COMMAND_NAMES.STEAM_DEALS) {
+      console.log(COMMAND_NAMES.STEAM_DEALS);
+      const games = await gatherSteamDeals();
+      console.log(games);
+      return res.status(200).send(games);
+    }
+
+    if (name === COMMAND_NAMES.STEAM_FREEBIES) {
+      console.log(COMMAND_NAMES.STEAM_FREEBIES);
+      // todo
+      return res.status(200).send();
     }
   }
 
