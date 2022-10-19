@@ -86,8 +86,8 @@ app.post("/interactions", async function (req, res) {
       return discordResponse(res, platformError);
     }
 
-    if (name === COMMAND_NAMES.FREEBIES) {
-      console.log(COMMAND_NAMES.FREEBIES);
+    if (name === COMMAND_NAMES.FREE) {
+      console.log(COMMAND_NAMES.FREE);
       // todo
       return discordResponse(res, "Coming soon!");
     }
