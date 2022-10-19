@@ -4,23 +4,6 @@ const FEATURED_GAMES = "http://store.steampowered.com/api/featured/?l=english";
 const FEATURED_CATEGORIES = "http://store.steampowered.com/api/featuredcategories/?l=english";
 
 export async function gatherSteamDeals() {
-  // id: 1659420,
-  // type: 0,
-  // name: 'UNCHARTED™: Legacy of Thieves Collection',
-  // discounted: false,
-  // discount_percent: 0,
-  // original_price: 4999,
-  // final_price: 4999,
-  // currency: 'EUR',
-  // large_capsule_image: 'https://cdn.akamai.steamstatic.com/steam/apps/1659420/capsule_616x353.jpg?t=1666040003',
-  // small_capsule_image: 'https://cdn.akamai.steamstatic.com/steam/apps/1659420/capsule_184x69.jpg?t=1666040003',
-  // windows_available: true,
-  // mac_available: false,
-  // linux_available: false,
-  // streamingvideo_available: false,
-  // header_image: 'https://cdn.akamai.steamstatic.com/steam/apps/1659420/header.jpg?t=1666040003',
-  // controller_support: 'full'
-
   const games = [].concat(await gatherFeaturedCategories(), await gatherFeaturedGames());
   const sortedGames = sortByDiscount(games);
   const topGames = sortedGames.slice(0, 10).map((g) => {
@@ -58,18 +41,18 @@ async function gatherFeaturedCategories() {
   return games;
 }
 
-// todo swap elements
 function sortByDiscount(games) {
   const arr = Array.from(games);
-  for (let i = 1; i < arr.length; i++) {
-    for (let j = 0; j < arr.length - i; j++) {
+  for (let i = arr.length - 2; i > 0; i--) {
+    for (let j = arr.length - 1; j > 1; j--) {
       const gameA = arr[j];
-      const gameB = arr[j + 1];
+      const gameB = arr[j - 1];
       if (gameA.discount_percent <= gameB.discount_percent) {
         continue;
       }
-      [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+      [arr[j], arr[j - 1]] = [arr[j - 1], arr[j]];
     }
   }
+
   return arr;
 }
