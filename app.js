@@ -15,6 +15,7 @@ import {
   COMMAND_NAMES
 } from "./commands.js";
 import { gatherSteamDeals } from "./steam.js";
+import { convertPrice } from "./utils.js";
 
 const PORT = process.env.PORT || 3000;
 
@@ -51,8 +52,8 @@ app.post("/interactions", async function (req, res) {
       let content = "Current deals \n";
       games.forEach((g) => {
         content = content.concat(`${g.name} \n`);
-        content = content.concat(`-${g.discount_percent}% ${g.final_price}€ \n`);
-        content = content.concat(`Usual price ${g.original_price}€ \n`);
+        content = content.concat(`-${g.discount_percent}% ${convertPrice(g.final_price)}€ \n`);
+        content = content.concat(`Usual price ${convertPrice(g.original_price)}€ \n`);
         content = content.concat(`${g.store_url} \n`);
         content = content.concat("\n");
       });
