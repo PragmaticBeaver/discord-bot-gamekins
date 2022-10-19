@@ -1,4 +1,4 @@
-import { DiscordRequest } from "./utils.js";
+import { DiscordRequest } from "./discord-utils.js";
 
 export async function VerifyGuildCommands(appId, guildId, commands) {
   if (guildId === "" || appId === "") return;

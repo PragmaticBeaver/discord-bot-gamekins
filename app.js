@@ -6,7 +6,7 @@ import {
   InteractionResponseType
 } from "discord-interactions";
 
-import { VerifyDiscordRequest } from "./utils.js";
+import { VerifyDiscordRequest } from "./discord-utils.js";
 import { VerifyGuildCommands } from "./guild-commands.js";
 import {
   SHOW_STEAM_DEALS,

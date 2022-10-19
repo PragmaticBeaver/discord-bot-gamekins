@@ -6,7 +6,7 @@ import {
   MessageComponentTypes,
   ButtonStyleTypes,
 } from "discord-interactions";
-import { VerifyDiscordRequest } from "../utils.js";
+import { VerifyDiscordRequest } from "../discord-utils.js";
 
 // Create and configure express app
 const app = express();
