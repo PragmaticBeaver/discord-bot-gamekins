@@ -9,8 +9,8 @@ import {
 import { VerifyDiscordRequest } from "./discord-utils.js";
 import { VerifyGuildCommands } from "./guild-commands.js";
 import {
-  SHOW_STEAM_DEALS,
-  SHOW_STEAM_FREEBIES,
+  FREE,
+  SHOW_DEALS,
   TEST_COMMAND,
   COMMAND_NAMES
 } from "./commands.js";
@@ -26,7 +26,8 @@ app.use(express.json(
 
 app.post("/interactions", async function (req, res) {
   const { type, id, data } = req.body;
-  console.log(`interaction: ${type, id, data}`);
+  console.log(`interaction: ${id}`);
+  console.log(data);
 
   if (type === InteractionType.PING) {
     return res.send({ type: InteractionResponseType.PONG });
@@ -37,8 +38,11 @@ app.post("/interactions", async function (req, res) {
    * See https://discord.com/developers/docs/interactions/application-commands#slash-commands
    */
   if (type === InteractionType.APPLICATION_COMMAND) {
-    const { name } = data;
+    const { name, options } = data;
 
+    /**
+     * Command TEST
+     */
     if (name === COMMAND_NAMES.TEST) {
       return res.send({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -46,27 +50,47 @@ app.post("/interactions", async function (req, res) {
       });
     }
 
-    if (name === COMMAND_NAMES.STEAM_DEALS) {
-      const games = await gatherSteamDeals();
+    /**
+     * Command DEALS
+     */
+    if (name === COMMAND_NAMES.DEALS) {
+      const platform = options[0]?.value.trim().toLocaleLowerCase();
+      if (!platform) {
+        return res.status(400).send("Platform not defined.");
+      }
 
-      let content = "Current deals \n";
-      games.forEach((g) => {
-        const isoCode = g.currency;
-        content = content.concat(`${g.name} \n`);
-        content = content.concat(`-${g.discount_percent}% ${convertPrice(isoCode, g.final_price)} \n`);
-        content = content.concat(`Usual price ${convertPrice(isoCode, g.original_price)} \n`);
-        content = content.concat(`${g.store_url} \n`);
-        content = content.concat("\n");
-      });
+      if (platform.includes("steam")) {
+        const games = await gatherSteamDeals();
 
-      return res.send({
-        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-        data: { content },
-      });
+        let content = "Current deals \n";
+        games.forEach((g) => {
+          const isoCode = g.currency;
+          content = content.concat(`${g.name} \n`);
+          content = content.concat(`-${g.discount_percent}% ${convertPrice(isoCode, g.final_price)} \n`);
+          content = content.concat(`Usual price ${convertPrice(isoCode, g.original_price)} \n`);
+          content = content.concat(`${g.store_url} \n`);
+          content = content.concat("\n");
+        });
+
+        return res.send({
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: { content },
+        });
+      }
+
+      if (platform.includes("gog") || platform.includes("good old games")) {
+        // todo
+      }
+
+      if (platform.includes("epic") || platform.includes("unreal")) {
+        // todo
+      }
+
+      return res.status(404).send("Platform unknown.");
     }
 
-    if (name === COMMAND_NAMES.STEAM_FREEBIES) {
-      console.log(COMMAND_NAMES.STEAM_FREEBIES);
+    if (name === COMMAND_NAMES.FREEBIES) {
+      console.log(COMMAND_NAMES.FREEBIES);
       // todo
       return res.status(200).send();
     }
@@ -88,7 +112,7 @@ app.listen(PORT, () => {
   // Check if guild commands from commands.js are installed (if not, install them)
   VerifyGuildCommands(process.env.APP_ID, process.env.GUILD_ID, [
     TEST_COMMAND,
-    SHOW_STEAM_DEALS,
-    SHOW_STEAM_FREEBIES,
+    SHOW_DEALS,
+    FREE,
   ]);
 });

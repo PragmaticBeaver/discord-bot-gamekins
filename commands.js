@@ -1,23 +1,7 @@
-// // Command containing options
-// export const CHALLENGE_COMMAND = {
-//   name: "challenge",
-//   description: "Challenge to a match of rock paper scissors",
-//   options: [
-//     {
-//       type: 3,
-//       name: "object",
-//       description: "Pick your object",
-//       required: true,
-//       choices: createCommandChoices(),
-//     },
-//   ],
-//   type: 1,
-// };
-
-
 const COMMAND_TYPES = {
   SUB_COMMAND: 1,
   SUB_COMMAND_GROUP: 2,
+  TEXT_COMMAND: 3,
   USER: 6,
   CHANNEL: 7,
   ROLE: 8,
@@ -25,8 +9,9 @@ const COMMAND_TYPES = {
 
 export const COMMAND_NAMES = {
   TEST: "test",
+  DEALS: "deals",
   STEAM_DEALS: "show-deals-steam",
-  STEAM_FREEBIES: "show-freebies-steam"
+  FREE: "free"
 };
 
 export const TEST_COMMAND = {
@@ -35,14 +20,21 @@ export const TEST_COMMAND = {
   type: 1,
 };
 
-export const SHOW_STEAM_DEALS = {
-  name: COMMAND_NAMES.STEAM_DEALS,
-  description: "Show the top deals on steam",
-  type: COMMAND_TYPES.SUB_COMMAND,
+export const SHOW_DEALS = {
+  name: COMMAND_NAMES.DEALS,
+  description: "Show the top deals from a given platform.",
+  options: [
+    {
+      type: COMMAND_TYPES.TEXT_COMMAND,
+      name: "platform",
+      description: "The platform of choice.",
+      required: true
+    }
+  ]
 };
 
-export const SHOW_STEAM_FREEBIES = {
-  name: COMMAND_NAMES.STEAM_FREEBIES,
-  description: "Show free games on steam",
-  type: COMMAND_TYPES.SUB_COMMAND,
+export const FREE = {
+  name: COMMAND_NAMES.FREE,
+  description: "Show free games.",
+  type: COMMAND_TYPES.SUB_COMMAND
 };
