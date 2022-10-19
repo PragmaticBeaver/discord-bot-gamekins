@@ -1,4 +1,4 @@
-import { DiscordRequest } from "./discord-utils.js";
+import { discordRequest } from "./discord-utils.js";
 
 export async function VerifyGuildCommands(appId, guildId, commands) {
   if (guildId === "" || appId === "") return;
@@ -14,7 +14,7 @@ async function VerifyGuildCommand(appId, guildId, command) {
   const endpoint = buildGuildCommandsEndpoint(appId, guildId);
 
   try {
-    const res = await DiscordRequest(endpoint, { method: "GET" });
+    const res = await discordRequest(endpoint, { method: "GET" });
     const data = await res.json();
 
     if (data) {
@@ -37,7 +37,7 @@ async function InstallGuildCommand(appId, guildId, command) {
   const endpoint = buildGuildCommandsEndpoint(appId, guildId);
 
   try {
-    await DiscordRequest(endpoint, { method: "POST", body: command });
+    await discordRequest(endpoint, { method: "POST", body: command });
   } catch (err) {
     console.error(err);
   }

@@ -6,7 +6,7 @@ import {
   InteractionResponseType
 } from "discord-interactions";
 
-import { VerifyDiscordRequest } from "./discord-utils.js";
+import { discordResponse, verifyDiscordRequest } from "./discord-utils.js";
 import { VerifyGuildCommands } from "./guild-commands.js";
 import {
   FREE,
@@ -21,7 +21,7 @@ const PORT = process.env.PORT || 3000;
 
 const app = express();
 app.use(express.json(
-  { verify: VerifyDiscordRequest(process.env.PUBLIC_KEY) } // express middleware for verification
+  { verify: verifyDiscordRequest(process.env.PUBLIC_KEY) } // express middleware for verification
 ));
 
 app.post("/interactions", async function (req, res) {
@@ -39,15 +39,13 @@ app.post("/interactions", async function (req, res) {
    */
   if (type === InteractionType.APPLICATION_COMMAND) {
     const { name, options } = data;
+    const platformError = "Something went wrong!\nThe chosen platform is unknown, please chose one of the following;\n'steam', 'gog' or 'epic'.";
 
     /**
      * Command TEST
      */
     if (name === COMMAND_NAMES.TEST) {
-      return res.send({
-        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-        data: { content: "hello world" },
-      });
+      return discordResponse(res, "hello world");
     }
 
     /**
@@ -56,7 +54,7 @@ app.post("/interactions", async function (req, res) {
     if (name === COMMAND_NAMES.DEALS) {
       const platform = options[0]?.value.trim().toLocaleLowerCase();
       if (!platform) {
-        return res.status(400).send("Platform not defined.");
+        return discordResponse(res, platformError);
       }
 
       if (platform.includes("steam")) {
@@ -72,27 +70,26 @@ app.post("/interactions", async function (req, res) {
           content = content.concat("\n");
         });
 
-        return res.send({
-          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-          data: { content },
-        });
+        return discordResponse(res, content);
       }
 
       if (platform.includes("gog") || platform.includes("good old games")) {
         // todo
+        return discordResponse(res, "Coming soon!");
       }
 
       if (platform.includes("epic") || platform.includes("unreal")) {
         // todo
+        return discordResponse(res, "Coming soon!");
       }
 
-      return res.status(404).send("Platform unknown.");
+      return discordResponse(res, platformError);
     }
 
     if (name === COMMAND_NAMES.FREEBIES) {
       console.log(COMMAND_NAMES.FREEBIES);
       // todo
-      return res.status(200).send();
+      return discordResponse(res, "Coming soon!");
     }
   }
 
