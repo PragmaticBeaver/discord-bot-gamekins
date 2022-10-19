@@ -86,6 +86,9 @@ app.post("/interactions", async function (req, res) {
       return discordResponse(res, platformError);
     }
 
+    /**
+     * Command FREE
+     */
     if (name === COMMAND_NAMES.FREE) {
       console.log(COMMAND_NAMES.FREE);
       // todo
