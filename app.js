@@ -51,10 +51,21 @@ app.post("/interactions", async function (req, res) {
     }
 
     if (name === COMMAND_NAMES.STEAM_DEALS) {
-      console.log(COMMAND_NAMES.STEAM_DEALS);
       const games = await gatherSteamDeals();
-      console.log(games);
-      return res.status(200).send(games);
+
+      let content = "Current deals \n";
+      games.forEach((g) => {
+        content = content.concat(`${g.name} \n`);
+        content = content.concat(`-${g.discount_percent}% ${g.final_price}€ \n`);
+        content = content.concat(`Usual price ${g.original_price}€ \n`);
+        content = content.concat(`${g.store_url} \n`);
+        content = content.concat("\n");
+      });
+
+      return res.send({
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: { content },
+      });
     }
 
     if (name === COMMAND_NAMES.STEAM_FREEBIES) {
