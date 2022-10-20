@@ -60,7 +60,7 @@ app.post("/interactions", async function (req, res) {
       if (platform.includes("steam")) {
         const games = await gatherSteamDeals();
 
-        let content = "Current deals \n";
+        let content = "Current deals \n\n";
         games.forEach((g) => {
           const isoCode = g.currency;
           content = content.concat(`${g.name} \n`);
