@@ -44,7 +44,7 @@ async function gatherFeaturedCategories() {
 function sortByDiscount(games) {
   const arr = Array.from(games);
   for (let i = arr.length - 2; i > 0; i--) {
-    for (let j = arr.length - 1; j > 1; j--) {
+    for (let j = arr.length - 1; j > 0; j--) {
       const gameA = arr[j];
       const gameB = arr[j - 1];
       if (gameA.discount_percent <= gameB.discount_percent) {
