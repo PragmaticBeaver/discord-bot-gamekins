@@ -59,6 +59,9 @@ app.post("/interactions", async function (req, res) {
 
       if (platform.includes("steam")) {
         const games = await gatherSteamDeals();
+        if (!games || games.length < 1) {
+          return discordResponse(res, "No deals found. :disappointed_relieved:");
+        }
         const content = buildChatOutput(games, "Current deals");
         return discordResponse(res, content);
       }
