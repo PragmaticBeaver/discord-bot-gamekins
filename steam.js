@@ -17,14 +17,13 @@ export async function gatherSteamFreebies() {
   const games = await loadSteamGames();
   const sortedGames = sortByLowestPrice(games);
   const freeGames = filter(sortedGames, (g) => {
-    if (parseInt(g.final_price) <= 0) {
+    if (parseInt(g.final_price) <= 0 && g.discount_percent > 0) {
       return g;
     }
   });
   if (!freeGames || freeGames.length < 1) {
     return;
   }
-  console.log(freeGames);
   const topGames = extractTopGames(freeGames);
   return topGames;
 }
