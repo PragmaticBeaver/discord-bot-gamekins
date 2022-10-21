@@ -1,7 +1,7 @@
 import { discordRequest } from "./discord-utils.js";
 
 export async function VerifyGuildCommands(appId, guildId, nodeEnv, commands) {
-  if (guildId === "" || appId === "") return;
+  if (appId === "") return;
 
   const endpoint = buildGuildCommandsEndpoint(appId, guildId, nodeEnv);
   commands.forEach((c) => VerifyGuildCommand(c, endpoint));
