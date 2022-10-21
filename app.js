@@ -107,6 +107,8 @@ app.listen(PORT, () => {
   const guildId = process.env.GUILD_ID;
   const nodeEnv = process.env.NODE_ENV;
 
+  console.log("guildId", guildId);
+  console.log("nodeEnv", nodeEnv);
   console.log("Listening on port", PORT);
 
   // Check if guild commands from commands.js are installed (if not, install them)

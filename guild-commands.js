@@ -18,6 +18,7 @@ async function VerifyGuildCommand(command, endpoint) {
   try {
     const res = await discordRequest(endpoint, { method: "GET" });
     const data = await res.json();
+    console.log("guild response", data);
 
     if (data) {
       const installedNames = data.map((c) => c["name"]);
