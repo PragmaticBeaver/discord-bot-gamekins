@@ -27,7 +27,6 @@ app.use(express.json(
 app.post("/interactions", async function (req, res) {
   const { type, id, data } = req.body;
   console.log(`interaction: ${id} - command ${type}`);
-  console.log(data);
 
   if (type === InteractionType.PING) {
     return res.send({ type: InteractionResponseType.PONG });

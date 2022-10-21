@@ -4,7 +4,6 @@ export async function VerifyGuildCommands(appId, guildId, nodeEnv, commands) {
   if (appId === "") return;
 
   const endpoint = buildGuildCommandsEndpoint(appId, guildId, nodeEnv);
-  console.log("endpoint", endpoint);
   commands.forEach((c) => VerifyGuildCommand(c, endpoint));
 }
 
