@@ -26,8 +26,7 @@ app.use(express.json(
 
 app.post("/interactions", async function (req, res) {
   const { type, id, data } = req.body;
-  console.log(`interaction: ${id}`);
-  console.log(data);
+  console.log(`interaction: ${id} - command ${type}`);
 
   if (type === InteractionType.PING) {
     return res.send({ type: InteractionResponseType.PONG });
@@ -83,7 +82,6 @@ app.post("/interactions", async function (req, res) {
      * Command FREE
      */
     if (name === COMMAND_NAMES.FREE) {
-      console.log(COMMAND_NAMES.FREE);
       const freeSteamGames = await gatherSteamFreebies();
       // todo gather games from other stores
       if (!freeSteamGames || freeSteamGames.length < 1) {
