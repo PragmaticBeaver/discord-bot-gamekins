@@ -103,10 +103,14 @@ app.post("/interactions", async function (req, res) {
 });
 
 app.listen(PORT, () => {
+  const appId = process.env.APP_ID;
+  const guildId = process.env.GUILD_ID;
+  const nodeEnv = process.env.NODE_ENV;
+
   console.log("Listening on port", PORT);
 
   // Check if guild commands from commands.js are installed (if not, install them)
-  VerifyGuildCommands(process.env.APP_ID, process.env.GUILD_ID, [
+  VerifyGuildCommands(appId, guildId, nodeEnv, [
     TEST_COMMAND,
     SHOW_DEALS,
     FREE,

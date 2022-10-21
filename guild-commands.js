@@ -1,18 +1,20 @@
 import { discordRequest } from "./discord-utils.js";
 
-export async function VerifyGuildCommands(appId, guildId, commands) {
+export async function VerifyGuildCommands(appId, guildId, nodeEnv, commands) {
   if (guildId === "" || appId === "") return;
 
-  commands.forEach((c) => VerifyGuildCommand(appId, guildId, c));
+  const endpoint = buildGuildCommandsEndpoint(appId, guildId, nodeEnv);
+  commands.forEach((c) => VerifyGuildCommand(c, endpoint));
 }
 
-function buildGuildCommandsEndpoint(appId, guildId) {
-  return `applications/${appId}/guilds/${guildId}/commands`;
+function buildGuildCommandsEndpoint(appId, guildId, nodeEnv) {
+  const globalEndpoint = `applications/${appId}/commands`;
+  const guildEndpoint = `applications/${appId}/guilds/${guildId}/commands`;
+  const endpoint = nodeEnv === "dev" ? guildEndpoint : globalEndpoint;
+  return endpoint;
 }
 
-async function VerifyGuildCommand(appId, guildId, command) {
-  const endpoint = buildGuildCommandsEndpoint(appId, guildId);
-
+async function VerifyGuildCommand(command, endpoint) {
   try {
     const res = await discordRequest(endpoint, { method: "GET" });
     const data = await res.json();
@@ -23,7 +25,7 @@ async function VerifyGuildCommand(appId, guildId, command) {
       // todo use hash
       if (!installedNames.includes(command["name"])) {
         console.log(`Installing "${command["name"]}"`);
-        InstallGuildCommand(appId, guildId, command);
+        InstallGuildCommand(command, endpoint);
       } else {
         console.log(`"${command["name"]}" command already installed`);
       }
@@ -33,9 +35,7 @@ async function VerifyGuildCommand(appId, guildId, command) {
   }
 }
 
-async function InstallGuildCommand(appId, guildId, command) {
-  const endpoint = buildGuildCommandsEndpoint(appId, guildId);
-
+async function InstallGuildCommand(command, endpoint) {
   try {
     await discordRequest(endpoint, { method: "POST", body: command });
   } catch (err) {
