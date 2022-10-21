@@ -14,8 +14,8 @@ import {
   TEST_COMMAND,
   COMMAND_NAMES
 } from "./commands.js";
-import { gatherSteamDeals } from "./steam.js";
-import { convertPrice } from "./utils.js";
+import { gatherSteamDeals, gatherSteamFreebies } from "./steam.js";
+import { buildChatOutput } from "./utils.js";
 
 const PORT = process.env.PORT || 3000;
 
@@ -59,17 +59,7 @@ app.post("/interactions", async function (req, res) {
 
       if (platform.includes("steam")) {
         const games = await gatherSteamDeals();
-
-        let content = "Current deals \n\n";
-        games.forEach((g) => {
-          const isoCode = g.currency;
-          content = content.concat(`${g.name} \n`);
-          content = content.concat(`-${g.discount_percent}% ${convertPrice(isoCode, g.final_price)} \n`);
-          content = content.concat(`Usual price ${convertPrice(isoCode, g.original_price)} \n`);
-          content = content.concat(`${g.store_url} \n`);
-          content = content.concat("\n");
-        });
-
+        const content = buildChatOutput(games, "Current deals");
         return discordResponse(res, content);
       }
 
@@ -92,7 +82,9 @@ app.post("/interactions", async function (req, res) {
     if (name === COMMAND_NAMES.FREE) {
       console.log(COMMAND_NAMES.FREE);
       // todo
-      return discordResponse(res, "Coming soon!");
+      const freeSteamGames = await gatherSteamFreebies();
+      const content = buildChatOutput(freeSteamGames, "Freebies");
+      return discordResponse(res, content);
     }
   }
 

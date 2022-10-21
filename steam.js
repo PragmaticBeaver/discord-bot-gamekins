@@ -1,4 +1,5 @@
 import fetch from "node-fetch";
+import { filter } from "lodash-es";
 
 import { saveData, loadData } from "./storage.js";
 
@@ -15,7 +16,16 @@ export async function gatherSteamDeals() {
 export async function gatherSteamFreebies() {
   const games = await loadSteamGames();
   const sortedGames = sortByLowestPrice(games);
-  const topGames = extractTopGames(sortedGames);
+  const freeGames = filter(sortedGames, (g) => {
+    if (parseInt(g.final_price) <= 0) {
+      return g;
+    }
+  });
+  if (!freeGames || freeGames.length < 1) {
+    return;
+  }
+  console.log(freeGames);
+  const topGames = extractTopGames(freeGames);
   return topGames;
 }
 
@@ -95,19 +105,3 @@ function sortByLowestPrice(games) {
 
   return arr;
 }
-
-// function sortByHighestPrice(games) {
-//   const arr = Array.from(games);
-//   for (let i = 1; i < arr.length; i++) {
-//     for (let j = 0; j < arr.length - i; j++) {
-//       const gameA = arr[j];
-//       const gameB = arr[j + 1];
-//       if (gameA.final_price >= gameB.final_price) {
-//         continue;
-//       }
-//       [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-//     }
-//   }
-
-//   return arr;
-// }
