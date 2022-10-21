@@ -84,8 +84,8 @@ app.post("/interactions", async function (req, res) {
      */
     if (name === COMMAND_NAMES.FREE) {
       console.log(COMMAND_NAMES.FREE);
-      // todo
       const freeSteamGames = await gatherSteamFreebies();
+      // todo gather games from other stores
       if (!freeSteamGames || freeSteamGames.length < 1) {
         return discordResponse(res, "No free games. :disappointed_relieved:");
       }
@@ -98,10 +98,10 @@ app.post("/interactions", async function (req, res) {
    * Handle requests from interactive components
    * See https://discord.com/developers/docs/interactions/message-components#responding-to-a-component-interaction
    */
-  if (type === InteractionType.MESSAGE_COMPONENT) {
-    // custom_id set in payload when sending message component
-    // const componentId = data.custom_id;
-  }
+  // if (type === InteractionType.MESSAGE_COMPONENT) {
+  //   // custom_id set in payload when sending message component
+  //   // const componentId = data.custom_id;
+  // }
 });
 
 app.listen(PORT, () => {
