@@ -1,16 +1,40 @@
 import fetch from "node-fetch";
 
+import { saveData, loadData } from "./storage.js";
+
 const FEATURED_GAMES = "http://store.steampowered.com/api/featured/?l=english";
 const FEATURED_CATEGORIES = "http://store.steampowered.com/api/featuredcategories/?l=english";
 
 export async function gatherSteamDeals() {
-  const games = [].concat(await gatherFeaturedCategories(), await gatherFeaturedGames());
+  const games = await loadSteamGames();
   const sortedGames = sortByDiscount(games);
-  const topGames = sortedGames.slice(0, 10).map((g) => {
+  const topGames = extractTopGames(sortedGames);
+  return topGames;
+}
+
+export async function gatherSteamFreebies() {
+  const games = await loadSteamGames();
+  const sortedGames = sortByLowestPrice(games);
+  const topGames = extractTopGames(sortedGames);
+  return topGames;
+}
+
+function extractTopGames(games) {
+  const topGames = games.slice(0, 10).map((g) => {
     g.store_url = `https://store.steampowered.com/app/${g.id}`;
     return g;
   });
   return topGames;
+}
+
+async function loadSteamGames() {
+  const key = "games";
+  let games = loadData(key);
+  if (!games || games.length < 0) {
+    games = [].concat(await gatherFeaturedCategories(), await gatherFeaturedGames());
+    saveData(key, games);
+  }
+  return games;
 }
 
 async function gatherFeaturedGames() {
@@ -56,3 +80,34 @@ function sortByDiscount(games) {
 
   return arr;
 }
+
+function sortByLowestPrice(games) {
+  const arr = Array.from(games);
+  for (let i = arr.length - 2; i > 0; i--) {
+    for (let j = arr.length - 1; j > 0; j--) {
+      const gameA = arr[j];
+      const gameB = arr[j - 1];
+      if (gameA.final_price <= gameB.final_price && gameA.discounted) {
+        [arr[j], arr[j - 1]] = [arr[j - 1], arr[j]];
+      }
+    }
+  }
+
+  return arr;
+}
+
+// function sortByHighestPrice(games) {
+//   const arr = Array.from(games);
+//   for (let i = 1; i < arr.length; i++) {
+//     for (let j = 0; j < arr.length - i; j++) {
+//       const gameA = arr[j];
+//       const gameB = arr[j + 1];
+//       if (gameA.final_price >= gameB.final_price) {
+//         continue;
+//       }
+//       [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+//     }
+//   }
+
+//   return arr;
+// }
