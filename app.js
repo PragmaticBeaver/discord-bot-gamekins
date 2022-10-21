@@ -83,6 +83,9 @@ app.post("/interactions", async function (req, res) {
       console.log(COMMAND_NAMES.FREE);
       // todo
       const freeSteamGames = await gatherSteamFreebies();
+      if (!freeSteamGames || freeSteamGames.length < 1) {
+        return discordResponse(res, "No free games. :disappointed_relieved:");
+      }
       const content = buildChatOutput(freeSteamGames, "Freebies");
       return discordResponse(res, content);
     }
