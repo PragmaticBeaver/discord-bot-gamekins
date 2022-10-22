@@ -1,7 +1,7 @@
 import fetch from "node-fetch";
 import { find } from "lodash-es";
 
-import { createGame } from "./utils.js";
+import { createGame, convertDiscount } from "./utils.js";
 
 // const apiUrl = "https://store-content.ak.epicgames.com";
 // /content/productmapping => product mapping
@@ -47,11 +47,14 @@ function convertGames(games) {
   const formatedGames = [];
   games.forEach((g) => {
     if (g) {
+      const discountedPrice = g.price.totalPrice.discountPrice;
+      const originalPrice = g.price.totalPrice.originalPrice;
+
       const game = createGame(
         g.title,
-        g.price.totalPrice.discountPrice,
-        g.price.totalPrice.originalPrice,
-        g.price.totalPrice.discount, // todo discount is NOT percent, needs to be calculated!
+        discountedPrice,
+        originalPrice,
+        convertDiscount(originalPrice, discountedPrice),
         g.price.totalPrice.currencyCode,
         g.storeUrl
       );

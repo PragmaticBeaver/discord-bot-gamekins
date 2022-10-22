@@ -6,6 +6,12 @@ export function convertPrice(ISOCode, numericPrice) {
   ).format(price);
 }
 
+export function convertDiscount(originalPrice, finalPrice) {
+  const difference = finalPrice - originalPrice;
+  const discount = Math.trunc((difference / originalPrice) * 100);
+  return -discount;
+}
+
 export function buildChatOutput(games, header) {
   console.log(games);
   let content = `${header} \n\n`;
