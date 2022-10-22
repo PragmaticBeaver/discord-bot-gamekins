@@ -106,11 +106,7 @@ app.post("/interactions", async function (req, res) {
         return discordResponse(res, "No free games. :disappointed_relieved:");
       }
 
-      let content = "Freebies\n\n";
-      games.forEach((g) => {
-        content = content.concat(`${g.name || g.title}\n`);
-        content = content.concat(`${g.storeUrl}\n\n`);
-      });
+      const content = buildChatOutput(games, "Freebies");
       return discordResponse(res, content);
     }
   }

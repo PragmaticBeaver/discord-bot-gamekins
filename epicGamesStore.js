@@ -1,6 +1,8 @@
 import fetch from "node-fetch";
 import { find } from "lodash-es";
 
+import { createGame } from "./utils.js";
+
 // const apiUrl = "https://store-content.ak.epicgames.com";
 // /content/productmapping => product mapping
 // /content/products/{slug} => product
@@ -8,8 +10,6 @@ import { find } from "lodash-es";
 // 'https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions?locale={}&country={}&allowCountries={}' => free games
 
 // const FREE_URL = "https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions?locale=de-DE&country=DE";
-
-
 
 export async function gatherEpicGamesFreebies(ISOcountryCode) {
   const locale = "en-US";
@@ -37,5 +37,26 @@ export async function gatherEpicGamesFreebies(ISOcountryCode) {
     g.storeUrl = gameStorePageUrl + gameMap.pageSlug;
     return g;
   });
-  return freeGames;
+
+  const formatedGames = convertGames(freeGames);
+  console.log(formatedGames);
+  return formatedGames;
+}
+
+function convertGames(games) {
+  const formatedGames = [];
+  games.forEach((g) => {
+    if (g) {
+      const game = createGame(
+        g.title,
+        g.price.totalPrice.discountPrice,
+        g.price.totalPrice.originalPrice,
+        g.price.totalPrice.discount, // todo discount is NOT percent, needs to be calculated!
+        g.price.totalPrice.currencyCode,
+        g.storeUrl
+      );
+      formatedGames.push(game);
+    }
+  });
+  return formatedGames;
 }

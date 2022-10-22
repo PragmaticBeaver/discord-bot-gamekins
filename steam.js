@@ -2,6 +2,7 @@ import fetch from "node-fetch";
 import { filter } from "lodash-es";
 
 import { saveData, loadData } from "./storage.js";
+import { createGame } from "./utils.js";
 
 const FEATURED_GAMES = "http://store.steampowered.com/api/featured/?l=english";
 const FEATURED_CATEGORIES = "http://store.steampowered.com/api/featuredcategories/?l=english";
@@ -10,7 +11,8 @@ export async function gatherSteamDeals() {
   const games = await loadSteamGames();
   const sortedGames = sortByDiscount(games);
   const topGames = extractTopGames(sortedGames);
-  return topGames;
+  const formatedGames = convertGames(topGames);
+  return formatedGames;
 }
 
 export async function gatherSteamFreebies() {
@@ -25,7 +27,8 @@ export async function gatherSteamFreebies() {
     return;
   }
   const topGames = extractTopGames(freeGames);
-  return topGames;
+  const formatedGames = convertGames(topGames);
+  return formatedGames;
 }
 
 function extractTopGames(games) {
@@ -103,4 +106,20 @@ function sortByLowestPrice(games) {
   }
 
   return arr;
+}
+
+function convertGames(games) {
+  const formatedGames = [];
+  games.forEach((g) => {
+    const game = createGame(
+      g.name,
+      g.final_price,
+      g.original_price,
+      g.discount_percent,
+      g.currency,
+      g.storeUrl
+    );
+    formatedGames.push(game);
+  });
+  return formatedGames;
 }

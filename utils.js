@@ -7,30 +7,35 @@ export function convertPrice(ISOCode, numericPrice) {
 }
 
 export function buildChatOutput(games, header) {
+  console.log(games);
   let content = `${header} \n\n`;
   games.forEach((g) => {
     const isoCode = g.currency;
 
     content = content.concat(`${g.name} \n`);
 
-    if (g.final_price > 0) {
+    if (g.finalPrice > 0) {
       // Paid games
-      content = content.concat(`-${g.discount_percent}% ${convertPrice(isoCode, g.final_price)} \n`);
+      content = content.concat(`-${g.discountPercent}% ${convertPrice(isoCode, g.finalPrice)} \n`);
     } else {
       // Free games
-      if (g.discount_percent > 0) {
-        content = content.concat(`-${g.discount_percent}% Free \n`);
+      if (g.discountPercent > 0) {
+        content = content.concat(`-${g.discountPercent}% Free \n`);
       } else {
         content = content.concat("Free\n");
       }
     }
 
-    if (g.original_price) {
-      content = content.concat(`Usual price ${convertPrice(isoCode, g.original_price)} \n`);
+    if (g.originalPrice) {
+      content = content.concat(`Usual price ${convertPrice(isoCode, g.originalPrice)} \n`);
     }
 
     content = content.concat(`${g.storeUrl} \n`);
     content = content.concat("\n");
   });
   return content;
+}
+
+export function createGame(name, finalPrice, originalPrice, discountPercent, currency, storeUrl) {
+  return { name, finalPrice, originalPrice, discountPercent, currency, storeUrl };
 }
