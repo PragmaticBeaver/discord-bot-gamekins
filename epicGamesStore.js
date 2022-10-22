@@ -3,14 +3,6 @@ import { find } from "lodash-es";
 
 import { createGame, convertDiscount } from "./utils.js";
 
-// const apiUrl = "https://store-content.ak.epicgames.com";
-// /content/productmapping => product mapping
-// /content/products/{slug} => product
-// /content/store => store
-// 'https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions?locale={}&country={}&allowCountries={}' => free games
-
-// const FREE_URL = "https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions?locale=de-DE&country=DE";
-
 export async function gatherEpicGamesFreebies(ISOcountryCode) {
   const locale = "en-US";
   const freeGamesPromotionUrl = `https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions?locale=${locale}&country=${ISOcountryCode}`;
