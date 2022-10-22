@@ -36,5 +36,12 @@ export const SHOW_DEALS = {
 export const FREE = {
   name: COMMAND_NAMES.FREE,
   description: "Show free games.",
-  type: COMMAND_TYPES.SUB_COMMAND
+  options: [
+    {
+      type: COMMAND_TYPES.TEXT_COMMAND,
+      name: "country",
+      description: "The ISO Country Code; US, GB, DE, etc.",
+      required: true
+    }
+  ]
 };

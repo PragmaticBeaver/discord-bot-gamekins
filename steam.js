@@ -30,14 +30,14 @@ export async function gatherSteamFreebies() {
 
 function extractTopGames(games) {
   const topGames = games.slice(0, 10).map((g) => {
-    g.store_url = `https://store.steampowered.com/app/${g.id}`;
+    g.storeUrl = `https://store.steampowered.com/app/${g.id}`;
     return g;
   });
   return topGames;
 }
 
 async function loadSteamGames() {
-  const key = "games";
+  const key = "games-steam";
   let games = loadData(key);
   if (!games || games.length < 0) {
     games = [].concat(await gatherFeaturedCategories(), await gatherFeaturedGames());

@@ -29,7 +29,7 @@ export function buildChatOutput(games, header) {
       content = content.concat(`Usual price ${convertPrice(isoCode, g.original_price)} \n`);
     }
 
-    content = content.concat(`${g.store_url} \n`);
+    content = content.concat(`${g.storeUrl} \n`);
     content = content.concat("\n");
   });
   return content;

@@ -14,8 +14,9 @@ import {
   TEST_COMMAND,
   COMMAND_NAMES
 } from "./commands.js";
-import { gatherSteamDeals, gatherSteamFreebies } from "./steam.js";
 import { buildChatOutput } from "./utils.js";
+import { gatherSteamDeals, gatherSteamFreebies } from "./steam.js";
+import { gatherEpicGamesFreebies } from "./epicGamesStore.js";
 
 const PORT = process.env.PORT || 3000;
 
@@ -26,7 +27,7 @@ app.use(express.json(
 
 app.post("/interactions", async function (req, res) {
   const { type, id, data } = req.body;
-  console.log(`interaction: ${id} - command ${type}`);
+  console.log(`interaction: ${id} - command ${data?.name || type}`);
 
   if (type === InteractionType.PING) {
     return res.send({ type: InteractionResponseType.PONG });
@@ -82,12 +83,34 @@ app.post("/interactions", async function (req, res) {
      * Command FREE
      */
     if (name === COMMAND_NAMES.FREE) {
+      const countryCode = options[0]?.value.trim().toLocaleUpperCase();
+      if (!countryCode) {
+        return discordResponse(res, "Something went wrong!\nPlease provide a valid ISO country code.\nExamples: US, GB, DE, etc.");
+      }
+
+      let games = [];
+
       const freeSteamGames = await gatherSteamFreebies();
-      // todo gather games from other stores
-      if (!freeSteamGames || freeSteamGames.length < 1) {
+      if (freeSteamGames?.length > 0) {
+        games = games.concat(freeSteamGames);
+      }
+
+      const freeEpicGames = await gatherEpicGamesFreebies(countryCode);
+      if (freeEpicGames?.length > 0) {
+        games = games.concat(freeEpicGames);
+      }
+
+      console.log(`found ${games.length} freebies`);
+
+      if (games.length < 1) {
         return discordResponse(res, "No free games. :disappointed_relieved:");
       }
-      const content = buildChatOutput(freeSteamGames, "Freebies");
+
+      let content = "Freebies\n\n";
+      games.forEach((g) => {
+        content = content.concat(`${g.name || g.title}\n`);
+        content = content.concat(`${g.storeUrl}\n\n`);
+      });
       return discordResponse(res, content);
     }
   }

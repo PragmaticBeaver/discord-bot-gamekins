@@ -1,3 +1,5 @@
+import hash from "object-hash";
+
 import { discordRequest } from "./discord-utils.js";
 
 export async function VerifyGuildCommands(appId, guildId, nodeEnv, commands) {
@@ -15,23 +17,30 @@ function buildGuildCommandsEndpoint(appId, guildId, nodeEnv) {
 }
 
 async function VerifyGuildCommand(command, endpoint) {
+  let data;
   try {
     const res = await discordRequest(endpoint, { method: "GET" });
-    const data = await res.json();
-
-    if (data) {
-      const installedNames = data.map((c) => c["name"]);
-      // This is just matching on the name, so it's not good for updates
-      // todo use hash
-      if (!installedNames.includes(command["name"])) {
-        console.log(`Installing "${command["name"]}"`);
-        InstallGuildCommand(command, endpoint);
-      } else {
-        console.log(`"${command["name"]}" command already installed`);
-      }
-    }
+    data = await res.json();
   } catch (err) {
     console.error(err);
+    return;
+  }
+
+  let installedCommand;
+  data.forEach((cmd) => {
+    if (cmd.name === command.name) {
+      installedCommand = cmd;
+      return;
+    }
+  });
+
+  const installedCommandHash = calcCommandHash(installedCommand);
+  const newCommandHash = calcCommandHash(command);
+  if (installedCommandHash !== newCommandHash) {
+    console.log(`Installing "${command.name}"`);
+    await InstallGuildCommand(command, endpoint);
+  } else {
+    console.log(`"${command.name}" command already installed`);
   }
 }
 
@@ -41,4 +50,22 @@ async function InstallGuildCommand(command, endpoint) {
   } catch (err) {
     console.error(err);
   }
+}
+
+function calcCommandHash(command) {
+  return hash(
+    command,
+    {
+      algorithm: "md5", encoding: "base64",
+      respectType: false, unorderedArrays: true, unorderedObjects: true, unorderedSets: true,
+      excludeKeys: (k) => {
+        return k === "id" ||
+          k === "application_id" ||
+          k === "version" ||
+          k === "default_permission" ||
+          k === "default_member_permissions" ||
+          k === "type" ||
+          k === "guild_id";
+      }
+    });
 }
