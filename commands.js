@@ -20,6 +20,7 @@ export const TEST_COMMAND = {
   type: 1,
 };
 
+// todo get country iso code from user
 export const SHOW_DEALS = {
   name: COMMAND_NAMES.DEALS,
   description: "Show the top deals from a given platform.",
