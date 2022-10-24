@@ -30,6 +30,12 @@ export const SHOW_DEALS = {
       name: "platform",
       description: "The platform of choice.",
       required: true
+    },
+    {
+      type: COMMAND_TYPES.TEXT_COMMAND,
+      name: "country",
+      description: "The ISO Country Code; US, GB, DE, etc.",
+      required: true
     }
   ]
 };
