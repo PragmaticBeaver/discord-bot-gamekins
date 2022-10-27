@@ -16,25 +16,18 @@ export const COMMAND_NAMES = {
 
 export const TEST_COMMAND = {
   name: COMMAND_NAMES.TEST,
-  description: "Basic guild command",
+  description: "Teste die Verbindung zum Bot.",
   type: 1,
 };
 
-// todo get country iso code from user
 export const SHOW_DEALS = {
   name: COMMAND_NAMES.DEALS,
-  description: "Show the top deals from a given platform.",
+  description: "Zeig mir die besten Deals meines Stores an!",
   options: [
     {
       type: COMMAND_TYPES.TEXT_COMMAND,
       name: "platform",
-      description: "The platform of choice.",
-      required: true
-    },
-    {
-      type: COMMAND_TYPES.TEXT_COMMAND,
-      name: "country",
-      description: "The ISO Country Code; US, GB, DE, etc.",
+      description: "Store deiner Wahl, zum Beispiel 'steam', 'epic', 'gog'.",
       required: true
     }
   ]
