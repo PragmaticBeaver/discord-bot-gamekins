@@ -83,11 +83,6 @@ app.post("/interactions", async function (req, res) {
      * Command FREE
      */
     if (name === COMMAND_NAMES.FREE) {
-      const countryCode = options[0]?.value.trim().toLocaleUpperCase();
-      if (!countryCode) {
-        return discordResponse(res, "Something went wrong!\nPlease provide a valid ISO country code.\nExamples: US, GB, DE, etc.");
-      }
-
       let games = [];
 
       const freeSteamGames = await gatherSteamFreebies();
@@ -95,7 +90,7 @@ app.post("/interactions", async function (req, res) {
         games = games.concat(freeSteamGames);
       }
 
-      const freeEpicGames = await gatherEpicGamesFreebies(countryCode);
+      const freeEpicGames = await gatherEpicGamesFreebies();
       if (freeEpicGames?.length > 0) {
         games = games.concat(freeEpicGames);
       }
