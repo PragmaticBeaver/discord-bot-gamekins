@@ -16,11 +16,10 @@ export async function gatherEpicGamesFreebies(ISOcountryCode = "DE") {
     return;
   }
 
-  console.log(res);
-
   const games = res?.data?.Catalog?.searchStore?.elements;
   const freeGames = games.filter((g) => {
-    // todo filter by price
+    if (g.price.totalPrice.discountPrice > 0 || g.price.totalPrice.originalPrice === 0) return;
+
     const gameMap = find(g.catalogNs.mappings, (m) => {
       if (m.pageSlug) {
         return m;
