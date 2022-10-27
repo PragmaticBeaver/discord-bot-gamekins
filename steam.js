@@ -4,8 +4,8 @@ import { filter } from "lodash-es";
 import { saveData, loadData } from "./storage.js";
 import { createGame } from "./utils.js";
 
-const FEATURED_GAMES = "http://store.steampowered.com/api/featured/?l=english";
-const FEATURED_CATEGORIES = "http://store.steampowered.com/api/featuredcategories/?l=english";
+const FEATURED_GAMES = "http://store.steampowered.com/api/featured/?l=german";
+const FEATURED_CATEGORIES = "http://store.steampowered.com/api/featuredcategories/?l=german";
 
 export async function gatherSteamDeals() {
   const games = await loadSteamGames();
