@@ -1,22 +1,22 @@
 import "dotenv/config"; // will use .env file from root dir
 
-import express from "express";
 import {
-  InteractionType,
-  InteractionResponseType
-} from "discord-interactions";
-
-import { discordResponse, verifyDiscordRequest } from "./discord-utils.js";
-import { VerifyGuildCommands } from "./guild-commands.js";
-import {
+  COMMAND_NAMES,
   FREE,
   SHOW_DEALS,
-  TEST_COMMAND,
-  COMMAND_NAMES
+  TEST_COMMAND
 } from "./commands.js";
-import { buildChatOutput } from "./utils.js";
+import {
+  InteractionResponseType,
+  InteractionType
+} from "discord-interactions";
+import { discordResponse, verifyDiscordRequest } from "./discord-utils.js";
 import { gatherSteamDeals, gatherSteamFreebies } from "./steam.js";
+
+import { buildChatOutput } from "./utils.js";
+import express from "express";
 import { gatherEpicGamesFreebies } from "./epicGamesStore.js";
+import { verifyGuildCommands } from "./guild-commands.js";
 
 const PORT = process.env.PORT || 3000;
 
@@ -122,9 +122,10 @@ app.listen(PORT, () => {
   const nodeEnv = process.env.NODE_ENV;
 
   console.log("Listening on port", PORT);
+  console.log({appId, guildId, nodeEnv});
 
   // Check if guild commands from commands.js are installed (if not, install them)
-  VerifyGuildCommands(appId, guildId, nodeEnv, [
+  verifyGuildCommands(appId, guildId, nodeEnv, [
     TEST_COMMAND,
     SHOW_DEALS,
     FREE,

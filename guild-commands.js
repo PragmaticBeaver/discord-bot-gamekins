@@ -1,12 +1,11 @@
+import { discordRequest } from "./discord-utils.js";
 import hash from "object-hash";
 
-import { discordRequest } from "./discord-utils.js";
-
-export async function VerifyGuildCommands(appId, guildId, nodeEnv, commands) {
+export async function verifyGuildCommands(appId, guildId, nodeEnv, commands) {
   if (appId === "") return;
 
   const endpoint = buildGuildCommandsEndpoint(appId, guildId, nodeEnv);
-  commands.forEach((c) => VerifyGuildCommand(c, endpoint));
+  commands.forEach((c) => verifyGuildCommand(c, endpoint));
 }
 
 function buildGuildCommandsEndpoint(appId, guildId, nodeEnv) {
@@ -16,7 +15,7 @@ function buildGuildCommandsEndpoint(appId, guildId, nodeEnv) {
   return endpoint;
 }
 
-async function VerifyGuildCommand(command, endpoint) {
+async function verifyGuildCommand(command, endpoint) {
   let data;
   try {
     const res = await discordRequest(endpoint, { method: "GET" });
@@ -53,6 +52,8 @@ async function InstallGuildCommand(command, endpoint) {
 }
 
 function calcCommandHash(command) {
+  if (!command) return undefined;
+  
   return hash(
     command,
     {
