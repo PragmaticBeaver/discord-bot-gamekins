@@ -90,6 +90,8 @@ app.post("/interactions", async function (req, res) {
       }
 
       const freeEpicGames = await gatherEpicGamesFreebies();
+      console.log({ freeEpicGames });
+
       if (freeEpicGames?.length > 0) {
         games = games.concat(freeEpicGames);
       }

@@ -19,24 +19,24 @@ export async function gatherEpicGamesFreebies(ISOcountryCode = "DE") {
   const games = res?.data?.Catalog?.searchStore?.elements;
   const freeGames = games.filter((g) => {
     if (
-      g.price.totalPrice.discountPrice > 0 ||
+      g.price.totalPrice.discount === g.price.totalPrice.originalPrice ||
+      g.price.totalPrice.discountPrice === 0 ||
       g.price.totalPrice.originalPrice === 0
-    )
-      return;
+    ) {
+      const gameMap = find(g.catalogNs.mappings, (m) => {
+        if (m.pageSlug) {
+          return m;
+        }
+      });
+      if (!gameMap) return;
 
-    const gameMap = find(g.catalogNs.mappings, (m) => {
-      if (m.pageSlug) {
-        return m;
-      }
-    });
-    if (!gameMap) return;
-
-    g.storeUrl = gameStorePageUrl + gameMap.pageSlug;
-    return g;
+      g.storeUrl = gameStorePageUrl + gameMap.pageSlug;
+      return g;
+    }
   });
 
   const formatedGames = convertGames(freeGames);
-  console.log(formatedGames);
+  console.log({ formatedGames });
   return formatedGames;
 }
 
