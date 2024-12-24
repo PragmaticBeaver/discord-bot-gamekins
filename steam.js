@@ -1,7 +1,8 @@
 import { loadData, saveData } from "./storage.js";
+
 import { createGame } from "./utils.js";
-import { filter } from "lodash-es";
 import fetch from "node-fetch";
+import { filter } from "lodash-es";
 
 const FEATURED_GAMES = "http://store.steampowered.com/api/featured/?l=german";
 const FEATURED_CATEGORIES =
@@ -43,10 +44,12 @@ async function loadSteamGames() {
   const key = "games-steam";
   let games = loadData(key);
   if (!games || games.length < 0) {
-    games = [].concat(
-      await gatherFeaturedCategories(),
-      await gatherFeaturedGames()
-    );
+    games = []
+      .concat(await gatherFeaturedCategories(), await gatherFeaturedGames())
+      .filter(
+        (gameOne, i, arr) =>
+          arr.findIndex((gameTwo) => gameTwo.id === gameOne.id) === i
+      );
     saveData(key, games);
   }
   return games;
@@ -113,9 +116,11 @@ function sortByLowestPrice(games) {
 }
 
 function convertGames(games) {
-  const formatedGames = [];
-  games.forEach((g) => {
-    const game = createGame(
+  return games.map((g) => {
+    console.log({ g });
+
+    return createGame(
+      g.id,
       g.name,
       g.final_price,
       g.original_price,
@@ -123,7 +128,5 @@ function convertGames(games) {
       g.currency,
       g.storeUrl
     );
-    formatedGames.push(game);
   });
-  return formatedGames;
 }
