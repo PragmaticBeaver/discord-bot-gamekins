@@ -1,6 +1,9 @@
 export function convertPrice(ISOCode, numericPrice) {
   const price = parseInt(numericPrice) / 100;
-  return new Intl.NumberFormat("de-DE", { style: "currency", currency: ISOCode }).format(price);
+  return new Intl.NumberFormat("de-DE", {
+    style: "currency",
+    currency: ISOCode,
+  }).format(price);
 }
 
 export function convertDiscount(originalPrice, finalPrice) {
@@ -19,7 +22,9 @@ export function buildChatOutput(games, header) {
 
     if (g.finalPrice > 0) {
       // Paid games
-      content = content.concat(`-${g.discountPercent}% ${convertPrice(isoCode, g.finalPrice)} \n`);
+      content = content.concat(
+        `-${g.discountPercent}% ${convertPrice(isoCode, g.finalPrice)} \n`
+      );
     } else {
       // Free games
       if (g.discountPercent > 0) {
@@ -30,7 +35,9 @@ export function buildChatOutput(games, header) {
     }
 
     if (g.originalPrice) {
-      content = content.concat(`Usual price ${convertPrice(isoCode, g.originalPrice)} \n`);
+      content = content.concat(
+        `Usual price ${convertPrice(isoCode, g.originalPrice)} \n`
+      );
     }
 
     content = content.concat(`${g.storeUrl} \n`);
@@ -39,6 +46,20 @@ export function buildChatOutput(games, header) {
   return content;
 }
 
-export function createGame(name, finalPrice, originalPrice, discountPercent, currency, storeUrl) {
-  return { name, finalPrice, originalPrice, discountPercent, currency, storeUrl };
+export function createGame(
+  name,
+  finalPrice,
+  originalPrice,
+  discountPercent,
+  currency,
+  storeUrl
+) {
+  return {
+    name,
+    finalPrice,
+    originalPrice,
+    discountPercent,
+    currency,
+    storeUrl,
+  };
 }

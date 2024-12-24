@@ -1,11 +1,11 @@
-import fetch from "node-fetch";
-import { filter } from "lodash-es";
-
-import { saveData, loadData } from "./storage.js";
+import { loadData, saveData } from "./storage.js";
 import { createGame } from "./utils.js";
+import { filter } from "lodash-es";
+import fetch from "node-fetch";
 
 const FEATURED_GAMES = "http://store.steampowered.com/api/featured/?l=german";
-const FEATURED_CATEGORIES = "http://store.steampowered.com/api/featuredcategories/?l=german";
+const FEATURED_CATEGORIES =
+  "http://store.steampowered.com/api/featuredcategories/?l=german";
 
 export async function gatherSteamDeals() {
   const games = await loadSteamGames();
@@ -43,7 +43,10 @@ async function loadSteamGames() {
   const key = "games-steam";
   let games = loadData(key);
   if (!games || games.length < 0) {
-    games = [].concat(await gatherFeaturedCategories(), await gatherFeaturedGames());
+    games = [].concat(
+      await gatherFeaturedCategories(),
+      await gatherFeaturedGames()
+    );
     saveData(key, games);
   }
   return games;
@@ -73,7 +76,8 @@ async function gatherFeaturedCategories() {
 
   const games = res.specials.items.concat(
     res.top_sellers.items,
-    res.new_releases.items);
+    res.new_releases.items
+  );
   return games;
 }
 

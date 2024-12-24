@@ -53,20 +53,24 @@ async function InstallGuildCommand(command, endpoint) {
 
 function calcCommandHash(command) {
   if (!command) return undefined;
-  
-  return hash(
-    command,
-    {
-      algorithm: "md5", encoding: "base64",
-      respectType: false, unorderedArrays: true, unorderedObjects: true, unorderedSets: true,
-      excludeKeys: (k) => {
-        return k === "id" ||
-          k === "application_id" ||
-          k === "version" ||
-          k === "default_permission" ||
-          k === "default_member_permissions" ||
-          k === "type" ||
-          k === "guild_id";
-      }
-    });
+
+  return hash(command, {
+    algorithm: "md5",
+    encoding: "base64",
+    respectType: false,
+    unorderedArrays: true,
+    unorderedObjects: true,
+    unorderedSets: true,
+    excludeKeys: (k) => {
+      return (
+        k === "id" ||
+        k === "application_id" ||
+        k === "version" ||
+        k === "default_permission" ||
+        k === "default_member_permissions" ||
+        k === "type" ||
+        k === "guild_id"
+      );
+    },
+  });
 }

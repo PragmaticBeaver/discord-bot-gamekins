@@ -1,29 +1,23 @@
-import "dotenv/config"; // will use .env file from root dir
+// will use .env file from root dir
 
-import {
-  COMMAND_NAMES,
-  FREE,
-  SHOW_DEALS,
-  TEST_COMMAND
-} from "./commands.js";
-import {
-  InteractionResponseType,
-  InteractionType
-} from "discord-interactions";
+import { COMMAND_NAMES, FREE, SHOW_DEALS, TEST_COMMAND } from "./commands.js";
 import { discordResponse, verifyDiscordRequest } from "./discord-utils.js";
-import { gatherSteamDeals, gatherSteamFreebies } from "./steam.js";
-
-import { buildChatOutput } from "./utils.js";
-import express from "express";
 import { gatherEpicGamesFreebies } from "./epicGamesStore.js";
 import { verifyGuildCommands } from "./guild-commands.js";
+import { gatherSteamDeals, gatherSteamFreebies } from "./steam.js";
+import { buildChatOutput } from "./utils.js";
+import { InteractionResponseType, InteractionType } from "discord-interactions";
+import "dotenv/config";
+import express from "express";
 
 const PORT = process.env.PORT || 3000;
 
 const app = express();
-app.use(express.json(
-  { verify: verifyDiscordRequest(process.env.PUBLIC_KEY) } // express middleware for verification
-));
+app.use(
+  express.json(
+    { verify: verifyDiscordRequest(process.env.PUBLIC_KEY) } // express middleware for verification
+  )
+);
 
 app.post("/interactions", async function (req, res) {
   const { type, id, data } = req.body;
@@ -39,7 +33,8 @@ app.post("/interactions", async function (req, res) {
    */
   if (type === InteractionType.APPLICATION_COMMAND) {
     const { name, options } = data;
-    const platformError = "Something went wrong!\nThe chosen platform is unknown, please chose one of the following;\n'steam', 'gog' or 'epic'.";
+    const platformError =
+      "Something went wrong!\nThe chosen platform is unknown, please chose one of the following;\n'steam', 'gog' or 'epic'.";
 
     /**
      * Command TEST
@@ -60,7 +55,10 @@ app.post("/interactions", async function (req, res) {
       if (platform.includes("steam")) {
         const games = await gatherSteamDeals();
         if (!games || games.length < 1) {
-          return discordResponse(res, "No deals found. :disappointed_relieved:");
+          return discordResponse(
+            res,
+            "No deals found. :disappointed_relieved:"
+          );
         }
         const content = buildChatOutput(games, "Current deals");
         return discordResponse(res, content);
@@ -122,7 +120,7 @@ app.listen(PORT, () => {
   const nodeEnv = process.env.NODE_ENV;
 
   console.log("Listening on port", PORT);
-  console.log({appId, guildId, nodeEnv});
+  console.log({ appId, guildId, nodeEnv });
 
   // Check if guild commands from commands.js are installed (if not, install them)
   verifyGuildCommands(appId, guildId, nodeEnv, [

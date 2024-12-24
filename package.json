@@ -14,12 +14,14 @@
     "nodemon": "^3.1.9"
   },
   "dependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^5.2.0",
     "discord-interactions": "^4.1.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "lodash-es": "^4.17.21",
     "node-cache": "^5.1.2",
     "node-fetch": "^3.3.2",
-    "object-hash": "^3.0.0"
+    "object-hash": "^3.0.0",
+    "prettier": "^3.4.2"
   }
 }

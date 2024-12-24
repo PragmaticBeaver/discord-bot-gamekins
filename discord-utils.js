@@ -1,7 +1,8 @@
-import "dotenv/config"; // will use .env file from root dir
+// will use .env file from root dir
 
-import fetch from "node-fetch";
 import { InteractionResponseType, verifyKey } from "discord-interactions";
+import "dotenv/config";
+import fetch from "node-fetch";
 
 export function verifyDiscordRequest(clientKey) {
   return function (req, res, buf) {
@@ -24,9 +25,10 @@ export async function discordRequest(endpoint, options) {
     headers: {
       Authorization: `Bot ${process.env.DISCORD_TOKEN}`,
       "Content-Type": "application/json; charset=UTF-8",
-      "User-Agent": "DiscordBot (https://github.com/discord/discord-example-app, 1.0.0)",
+      "User-Agent":
+        "DiscordBot (https://github.com/discord/discord-example-app, 1.0.0)",
     },
-    ...options
+    ...options,
   });
 
   if (!res.ok) {

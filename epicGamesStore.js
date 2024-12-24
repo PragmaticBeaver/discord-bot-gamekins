@@ -1,7 +1,6 @@
-import fetch from "node-fetch";
+import { convertDiscount, createGame } from "./utils.js";
 import { find } from "lodash-es";
-
-import { createGame, convertDiscount } from "./utils.js";
+import fetch from "node-fetch";
 
 export async function gatherEpicGamesFreebies(ISOcountryCode = "DE") {
   const locale = "de-DE";
@@ -18,7 +17,11 @@ export async function gatherEpicGamesFreebies(ISOcountryCode = "DE") {
 
   const games = res?.data?.Catalog?.searchStore?.elements;
   const freeGames = games.filter((g) => {
-    if (g.price.totalPrice.discountPrice > 0 || g.price.totalPrice.originalPrice === 0) return;
+    if (
+      g.price.totalPrice.discountPrice > 0 ||
+      g.price.totalPrice.originalPrice === 0
+    )
+      return;
 
     const gameMap = find(g.catalogNs.mappings, (m) => {
       if (m.pageSlug) {

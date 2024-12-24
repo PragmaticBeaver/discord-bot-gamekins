@@ -11,7 +11,7 @@ export const COMMAND_NAMES = {
   TEST: "test",
   DEALS: "deals",
   STEAM_DEALS: "show-deals-steam",
-  FREE: "free"
+  FREE: "free",
 };
 
 export const TEST_COMMAND = {
@@ -28,13 +28,13 @@ export const SHOW_DEALS = {
       type: COMMAND_TYPES.TEXT_COMMAND,
       name: "platform",
       description: "Store deiner Wahl, zum Beispiel 'steam', 'epic', 'gog'.",
-      required: true
-    }
-  ]
+      required: true,
+    },
+  ],
 };
 
 export const FREE = {
   name: COMMAND_NAMES.FREE,
   description: "Was gibts kostenloses?",
-  type: 1
+  type: 1,
 };
