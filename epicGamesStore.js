@@ -1,6 +1,7 @@
-import { convertDiscount, createGame } from "./utils.js";
-import { find } from "lodash-es";
+import { calculateDiscount, createGame } from "./utils.js";
+
 import fetch from "node-fetch";
+import { find } from "lodash-es";
 
 export async function gatherEpicGamesFreebies(ISOcountryCode = "DE") {
   const locale = "de-DE";
@@ -47,10 +48,11 @@ function convertGames(games) {
       const originalPrice = g.price.totalPrice.originalPrice;
 
       const game = createGame(
+        g.id,
         g.title,
         discountedPrice,
         originalPrice,
-        convertDiscount(originalPrice, discountedPrice),
+        calculateDiscount(originalPrice, discountedPrice),
         g.price.totalPrice.currencyCode,
         g.storeUrl
       );

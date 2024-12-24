@@ -1,4 +1,4 @@
-import { discordRequest } from "./discord-utils.js";
+import { discordApiRequest } from "./discord-utils.js";
 import hash from "object-hash";
 
 export async function verifyGuildCommands(appId, guildId, nodeEnv, commands) {
@@ -18,7 +18,7 @@ function buildGuildCommandsEndpoint(appId, guildId, nodeEnv) {
 async function verifyGuildCommand(command, endpoint) {
   let data;
   try {
-    const res = await discordRequest(endpoint, { method: "GET" });
+    const res = await discordApiRequest(endpoint, { method: "GET" });
     data = await res.json();
   } catch (err) {
     console.error(err);
@@ -45,7 +45,7 @@ async function verifyGuildCommand(command, endpoint) {
 
 async function InstallGuildCommand(command, endpoint) {
   try {
-    await discordRequest(endpoint, { method: "POST", body: command });
+    await discordApiRequest(endpoint, { method: "POST", body: command });
   } catch (err) {
     console.error(err);
   }

@@ -1,10 +1,11 @@
-// will use .env file from root dir
-
-import { InteractionResponseType, verifyKey } from "discord-interactions";
 import "dotenv/config";
+
+// will use .env file from root dir
+import { InteractionResponseType, verifyKey } from "discord-interactions";
+
 import fetch from "node-fetch";
 
-export function verifyDiscordRequest(clientKey) {
+export function verifyRequest(clientKey) {
   return function (req, res, buf) {
     const signature = req.get("X-Signature-Ed25519");
     const timestamp = req.get("X-Signature-Timestamp");
@@ -17,7 +18,7 @@ export function verifyDiscordRequest(clientKey) {
   };
 }
 
-export async function discordRequest(endpoint, options) {
+export async function discordApiRequest(endpoint, options) {
   const url = "https://discord.com/api/v10/" + endpoint;
   options.body = options.body ? JSON.stringify(options.body) : options.body;
 
@@ -26,7 +27,7 @@ export async function discordRequest(endpoint, options) {
       Authorization: `Bot ${process.env.DISCORD_TOKEN}`,
       "Content-Type": "application/json; charset=UTF-8",
       "User-Agent":
-        "DiscordBot (https://github.com/discord/discord-example-app, 1.0.0)",
+        "DiscordBot (https://github.com/discord/discord-example-app, 1.0.0)", // todo
     },
     ...options,
   });
@@ -40,7 +41,7 @@ export async function discordRequest(endpoint, options) {
   return res;
 }
 
-export function discordResponse(res, content) {
+export function createDiscordResponse(res, content) {
   return res.send({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: { content },

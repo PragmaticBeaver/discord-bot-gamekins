@@ -6,14 +6,14 @@ export function convertPrice(ISOCode, numericPrice) {
   }).format(price);
 }
 
-export function convertDiscount(originalPrice, finalPrice) {
-  const difference = finalPrice - originalPrice;
+export function calculateDiscount(originalPrice, currentPrice) {
+  const difference = currentPrice - originalPrice;
   const discount = Math.trunc((difference / originalPrice) * 100);
   return -discount;
 }
 
 export function buildChatOutput(games, header) {
-  console.log(games);
+  console.log({ games });
   let content = `${header} \n\n`;
   games.forEach((g) => {
     const isoCode = g.currency;
@@ -46,7 +46,11 @@ export function buildChatOutput(games, header) {
   return content;
 }
 
+/**
+ * Developer note; exists only because of missing types (not a TS project)
+ */
 export function createGame(
+  id,
   name,
   finalPrice,
   originalPrice,
@@ -55,6 +59,7 @@ export function createGame(
   storeUrl
 ) {
   return {
+    id,
     name,
     finalPrice,
     originalPrice,
