@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "tunnel": "ngrok http 3000"
+    "tunnel": "ngrok http 3000 --url cub-handy-manually.ngrok-free.app"
   },
   "devDependencies": {
     "eslint": "^9.17.0",
@@ -22,6 +22,7 @@
     "node-cache": "^5.1.2",
     "node-fetch": "^3.3.2",
     "object-hash": "^3.0.0",
-    "prettier": "^3.4.2"
+    "prettier": "^3.4.2",
+    "tweetnacl": "^1.0.3"
   }
 }

@@ -1,21 +1,22 @@
+import { InteractionResponseType } from "discord-interactions";
 import "dotenv/config";
+import fetch from "node-fetch";
+import nacl from "tweetnacl";
 
 // will use .env file from root dir
-import { InteractionResponseType, verifyKey } from "discord-interactions";
 
-import fetch from "node-fetch";
+export async function verifyRequest(req, res, _next) {
+  const clientKey = process.env.PUBLIC_KEY;
+  const signature = req.get("X-Signature-Ed25519");
+  const timestamp = req.get("X-Signature-Timestamp");
+  const body = JSON.stringify(req.body); // expected to be a string, not raw bytes
 
-export function verifyRequest(clientKey) {
-  return function (req, res, buf) {
-    const signature = req.get("X-Signature-Ed25519");
-    const timestamp = req.get("X-Signature-Timestamp");
-
-    const isValidRequest = verifyKey(buf, signature, timestamp, clientKey);
-    if (!isValidRequest) {
-      res.status(401).send("Bad request signature");
-      throw new Error("Bad request signature");
-    }
-  };
+  const isVerified = nacl.sign.detached.verify(
+    Buffer.from(timestamp + body),
+    Buffer.from(signature, "hex"),
+    Buffer.from(clientKey, "hex")
+  );
+  return isVerified;
 }
 
 export async function discordApiRequest(endpoint, options) {

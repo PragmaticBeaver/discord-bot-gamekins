@@ -1,26 +1,29 @@
-import "dotenv/config";
-
-// will use .env file from root dir
 import { COMMAND_NAMES, FREE, SHOW_DEALS, TEST_COMMAND } from "./commands.js";
-import { InteractionResponseType, InteractionType } from "discord-interactions";
 import { createDiscordResponse, verifyRequest } from "./discord-utils.js";
-import { gatherSteamDeals, gatherSteamFreebies } from "./steam.js";
-
-import { buildChatOutput } from "./utils.js";
-import express from "express";
 import { gatherEpicGamesFreebies } from "./epicGamesStore.js";
 import { verifyGuildCommands } from "./guild-commands.js";
+import { gatherSteamDeals, gatherSteamFreebies } from "./steam.js";
+import { buildChatOutput } from "./utils.js";
+import { InteractionResponseType, InteractionType } from "discord-interactions";
+import "dotenv/config";
+import express from "express";
+
+// will use .env file from root dir
 
 const PORT = process.env.PORT || 3000;
 
 const app = express();
 app.use(
-  express.json(
-    { verify: verifyRequest(process.env.PUBLIC_KEY) } // express middleware for verification
-  )
+  express.json()
+  // { verify: verifyRequest(process.env.PUBLIC_KEY) } // express middleware for verification
 );
 
 app.post("/interactions", async function (req, res) {
+  if (!(await verifyRequest(req, process.env.PUBLIC_KEY))) {
+    res.status(401).send("Bad request signature");
+    return;
+  }
+
   const { type, id, data } = req.body;
   console.log(`interaction: ${id} - command ${data?.name || type}`);
 
