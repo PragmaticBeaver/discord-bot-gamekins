@@ -1,7 +1,6 @@
 import { calculateDiscount, createGame } from "./utils.js";
 
 import fetch from "node-fetch";
-import { find } from "lodash-es";
 
 export async function gatherEpicGamesFreebies(ISOcountryCode = "DE") {
   const locale = "de-DE";
@@ -17,26 +16,24 @@ export async function gatherEpicGamesFreebies(ISOcountryCode = "DE") {
   }
 
   const games = res?.data?.Catalog?.searchStore?.elements;
+  // todo paging
+  // const count = res?.data?.Catalog?.paging?.count;
+  // const total = res?.data?.Catalog?.paging?.total;
   const freeGames = games.filter((g) => {
     if (
-      g.price.totalPrice.discount === g.price.totalPrice.originalPrice ||
-      g.price.totalPrice.discountPrice === 0 ||
-      g.price.totalPrice.originalPrice === 0
+      (g.price.totalPrice.discount === g.price.totalPrice.originalPrice ||
+        g.price.totalPrice.discountPrice === 0 ||
+        g.price.totalPrice.originalPrice === 0) &&
+      g.productSlug &&
+      g.productSlug !== "[]" // upcoming mystery games may not have a slug
     ) {
-      const gameMap = find(g.catalogNs.mappings, (m) => {
-        if (m.pageSlug) {
-          return m;
-        }
-      });
-      if (!gameMap) return;
-
-      g.storeUrl = gameStorePageUrl + gameMap.pageSlug;
+      g.storeUrl = gameStorePageUrl + g.productSlug;
       return g;
     }
   });
 
   const formatedGames = convertGames(freeGames);
-  console.log({ formatedGames });
+  // console.log({ formatedGames });
   return formatedGames;
 }
 
