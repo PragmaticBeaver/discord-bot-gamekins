@@ -1,5 +1,6 @@
-import { InteractionResponseType } from "discord-interactions";
 import "dotenv/config";
+
+import { InteractionResponseType } from "discord-interactions";
 import fetch from "node-fetch";
 import nacl from "tweetnacl";
 
@@ -42,7 +43,7 @@ export async function discordApiRequest(endpoint, options) {
   return res;
 }
 
-export function createDiscordResponse(res, content) {
+export function sendDiscordResponse(res, content) {
   return res.send({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: { content },
